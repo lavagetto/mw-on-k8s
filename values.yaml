@@ -1,0 +1,32 @@
+main_app:
+  image: stub-mw
+  version: latest # we use latest everywhere in the defaults.
+  port: 8080 # port exposed as a Service, also used by service-checker.
+
+service:
+  deployment: minikube # valid values are "production" and "minikube"
+  port:
+    name: http # a unique name of lowercase alphanumeric characters or "-", starting and ending with alphanumeric, max length 63
+    # protocol: TCP # TCP is the default protocol
+    targetPort: 8080 # the number or name of the exposed port on the container
+    port: 8080 # the number of the port desired to be exposed to the cluster
+    nodePort: null # you need to define this if "production" is used. In minikube environments let it autoallocate
+
+tls:
+  enabled: false # Switch to true in production
+monitoring:
+  enabled: true
+
+# See the dockerfiles for the the php-fpm base image to know what can be tweaked.
+# Those can be passed via config.public above.
+php:
+  fcgi_mode: FCGI_UNIX
+mw:
+  domain_suffix: "local"
+  httpd:
+    image_tag: stub-httpd:5
+    health_host: test.local
+  mcrouter:
+    enabled: true
+  nutcracker:
+    enabled: true
